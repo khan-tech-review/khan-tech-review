@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Tech & Review - Reviews, News, Tips</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#070C18',
+                            900: '#0B1120',
+                            800: '#131C31',
+                            700: '#1E293B',
+                            600: '#334155'
+                        },
+                        accent: {
+                            orange: '#FF5722',
+                            blue: '#3B82F6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B1120;
+            color: #F8FAFC;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070C18;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF5722;
+        }
+    </style>
+</head>
+<body class="bg-navy-900 text-slate-100 flex flex-col min-h-screen">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-navy-900/90 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Brand Logo (Matching Screenshot Styling) -->
+                <a href="#" onclick="filterCategory('All')" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white font-extrabold text-xl border border-blue-400/30">
+                        K
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black tracking-tight text-white flex items-center gap-1">
+                            Khan <span class="text-accent-orange">Tech</span> <span class="text-accent-orange font-normal">&</span> Review
+                        </div>
+                        <div class="text-[10px] tracking-widest font-semibold text-slate-400 uppercase">
+                            REVIEWS · NEWS · TIPS
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-4 font-medium text-sm text-slate-300">
+                    <button onclick="filterCategory('All')" class="nav-link px-3 py-2 rounded-lg hover:text-white hover:bg-slate-800 transition">Home</button>
+                    <button onclick="filterCategory('Tech News')" class="nav-link px-3 py-2 rounded-lg hover:text-white hover:bg-slate-800 transition">Tech News</button>
+                    <button onclick="filterCategory('Mobile Reviews')" class="nav-link px-3 py-2 rounded-lg hover:text-white hover:bg-slate-800 transition">Mobile Reviews</button>
+                    <button onclick="filterCategory('Android Tips')" class="nav-link px-3 py-2 rounded-lg hover:text-white hover:bg-slate-800 transition">Android Tips</button>
+                    <button onclick="filterCategory('How-To Guides')" class="nav-link px-3 py-2 rounded-lg hover:text-white hover:bg-slate-800 transition">How-To Guides</button>
+                </nav>
+
+                <!-- Search & Actions -->
+                <div class="hidden sm:flex items-center gap-3">
+                    <div class="relative">
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search articles..." 
+                            class="bg-navy-800 text-sm text-slate-200 placeholder-slate-400 rounded-full py-2 pl-9 pr-4 w-48 lg:w-64 border border-slate-700/60 focus:outline-none focus:border-accent-orange transition">
+                        <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Mobile Hamburger Button -->
+                <div class="md:hidden flex items-center gap-2">
+                    <button id="mobileMenuBtn" class="p-2 text-slate-300 hover:text-white focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-navy-800 border-b border-slate-700/60 px-4 pt-2 pb-4 space-y-2">
+            <div class="relative mb-3">
+                <input type="text" id="mobileSearchInput" oninput="handleMobileSearch()" placeholder="Search articles..." 
+                    class="w-full bg-navy-900 text-sm text-slate-200 placeholder-slate-400 rounded-lg py-2 pl-9 pr-4 border border-slate-700 focus:outline-none focus:border-accent-orange">
+                <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+            </div>
+            <button onclick="filterCategory('All')" class="block w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-700/50 rounded-lg">Home</button>
+            <button onclick="filterCategory('Tech News')" class="block w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-700/50 rounded-lg">Tech News</button>
+            <button onclick="filterCategory('Mobile Reviews')" class="block w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-700/50 rounded-lg">Mobile Reviews</button>
+            <button onclick="filterCategory('Android Tips')" class="block w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-700/50 rounded-lg">Android Tips</button>
+            <button onclick="filterCategory('How-To Guides')" class="block w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-700/50 rounded-lg">How-To Guides</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Category Pill Filters Header -->
+        <div class="flex items-center justify-between flex-wrap gap-4 mb-8 pb-4 border-b border-slate-800">
+            <div>
+                <h1 id="currentCategoryTitle" class="text-2xl font-bold text-white tracking-tight">Latest Articles</h1>
+                <p class="text-sm text-slate-400 mt-0.5">Explore our newest tech reviews, android tips, and guides</p>
+            </div>
+
+            <!-- Fast Filters -->
+            <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                <button onclick="filterCategory('All')" class="cat-pill active bg-accent-orange text-white px-3.5 py-1.5 rounded-full transition">All</button>
+                <button onclick="filterCategory('Tech News')" class="cat-pill bg-navy-800 text-slate-300 hover:bg-slate-700 px-3.5 py-1.5 rounded-full transition">Tech News</button>
+                <button onclick="filterCategory('Mobile Reviews')" class="cat-pill bg-navy-800 text-slate-300 hover:bg-slate-700 px-3.5 py-1.5 rounded-full transition">Mobile Reviews</button>
+                <button onclick="filterCategory('Android Tips')" class="cat-pill bg-navy-800 text-slate-300 hover:bg-slate-700 px-3.5 py-1.5 rounded-full transition">Android Tips</button>
+                <button onclick="filterCategory('How-To Guides')" class="cat-pill bg-navy-800 text-slate-300 hover:bg-slate-700 px-3.5 py-1.5 rounded-full transition">How-To Guides</button>
+            </div>
+        </div>
+
+        <!-- HERO FEATURED POST SECTION -->
+        <section id="heroSection" class="mb-12">
+            <div onclick="openArticleModal(1)" class="cursor-pointer group relative bg-navy-800 border border-slate-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:border-slate-700 transition duration-300 grid grid-cols-1 lg:grid-cols-12 gap-0">
+                <div class="lg:col-span-7 relative h-64 sm:h-80 lg:h-auto overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80" 
+                         alt="Featured Post" 
+                         class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy-900 lg:from-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 left-4 bg-accent-orange text-white text-xs font-bold px-3 py-1 rounded-md shadow-md uppercase tracking-wider">
+                        FEATURED REVIEW
+                    </span>
+                </div>
+                <div class="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 text-xs text-slate-400 mb-3">
+                            <span><i class="far fa-calendar-alt mr-1"></i> Oct 20, 2026</span>
+                            <span>•</span>
+                            <span><i class="far fa-clock mr-1"></i> 8 min read</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white group-hover:text-blue-400 transition mb-3 leading-snug">
+                            Samsung Galaxy S26 Ultra Full Review: The AI Camera Champion
+                        </h2>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6 line-clamp-3">
+                            We spent two weeks testing the flagship Samsung Galaxy S26 Ultra. Here is our in-depth analysis on battery life, display quality, 200MP camera setup, and raw performance benchmarks.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-700/60">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white">HK</div>
+                            <span class="text-xs font-semibold text-slate-200">Huzaima Khan</span>
+                        </div>
+                        <span class="text-accent-orange text-xs font-bold flex items-center gap-1 group-hover:translate-x-1 transition">
+                            Read Full Article <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ARTICLES GRID SECTION -->
+        <section>
+            <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic Article Cards Injected by JavaScript -->
+            </div>
+            
+            <!-- No Results Message -->
+            <div id="noResults" class="hidden text-center py-16">
+                <i class="fas fa-search text-4xl text-slate-600 mb-3"></i>
+                <h3 class="text-xl font-bold text-slate-300">No Articles Found</h3>
+                <p class="text-sm text-slate-500 mt-1">Try searching for something else or reset your filter.</p>
+                <button onclick="filterCategory('All')" class="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-semibold transition">
+                    Reset Filters
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER (EXACT MATCH TO THE UPLOADED DESIGN IMAGE) -->
+    <footer class="bg-navy-950 border-t border-slate-800/80 text-slate-300 pt-12 pb-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
+                
+                <!-- Left Column: About Khan Tech & Review -->
+                <div class="lg:col-span-5 space-y-4">
+                    <!-- Brand Logo -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-700 flex items-center justify-center text-white font-extrabold text-lg shadow-md">
+                            K
+                        </div>
+                        <div>
+                            <div class="text-2xl font-black text-white tracking-tight flex items-center gap-1">
+                                Khan <span class="text-accent-orange">Tech</span> <span class="text-accent-orange font-normal">&</span> Review
+                            </div>
+                            <div class="text-[9px] tracking-widest font-semibold text-slate-400 uppercase">
+                                REVIEWS · NEWS · TIPS
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-sm font-extrabold tracking-wider text-white uppercase pt-2">
+                        ABOUT KHAN TECH & REVIEW
+                    </h3>
+
+                    <p class="text-slate-300 text-sm leading-relaxed pr-2">
+                        Khan Tech & Review is an independent tech blog delivering honest smartphone reviews, breaking tech news, and practical Android tips and how-to guides. Our mission is simple: help you buy smarter and get more out of the devices you already own.
+                    </p>
+
+                    <div class="pt-2 flex items-center gap-2">
+                        <i class="far fa-envelope text-slate-400"></i>
+                        <a href="mailto:qarimuhammadhuzaima@gmail.com" class="text-slate-200 hover:text-white underline text-sm transition">
+                            qarimuhammadhuzaima@gmail.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Middle Column 1: Quick Links -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-sm font-extrabold tracking-wider text-white uppercase mb-4">
+                        QUICK LINKS
+                    </h3>
+                    <ul class="space-y-2.5 text-sm font-medium">
+                        <li><button onclick="openModal('privacyModal')" class="hover:text-white transition">Privacy Policy</button></li>
+                        <li><button onclick="openModal('termsModal')" class="hover:text-white transition">Terms of Service</button></li>
+                        <li><button onclick="openModal('disclaimerModal')" class="hover:text-white transition">Disclaimer</button></li>
+                        <li><button onclick="openModal('contactModal')" class="hover:text-white transition">Contact Us</button></li>
+                        <li><button onclick="openModal('aboutModal')" class="hover:text-white transition">About Us</button></li>
+                    </ul>
+                </div>
+
+                <!-- Middle Column 2: Sections -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-sm font-extrabold tracking-wider text-white uppercase mb-4">
+                        SECTIONS
+                    </h3>
+                    <ul class="space-y-2.5 text-sm font-medium">
+                        <li><button onclick="filterCategory('Tech News')" class="hover:text-white transition">Tech News</button></li>
+                        <li><button onclick="filterCategory('Mobile Reviews')" class="hover:text-white transition">Mobile Reviews</button></li>
+                        <li><button onclick="filterCategory('Android Tips')" class="hover:text-white transition">Android Tips</button></li>
+                        <li><button onclick="filterCategory('How-To Guides')" class="hover:text-white transition">How-To Guides</button></li>
+                    </ul>
+                </div>
+
+                <!-- Right Column: Follow Us -->
+                <div class="lg:col-span-3">
+                    <h3 class="text-sm font-extrabold tracking-wider text-white uppercase mb-4">
+                        FOLLOW US
+                    </h3>
+                    <div class="space-y-3">
+                        <a href="https://facebook.com" target="_blank" class="flex items-center gap-3 text-sm font-semibold hover:opacity-90 transition group">
+                            <div class="w-8 h-8 rounded-lg bg-[#1877F2] flex items-center justify-center text-white shadow">
+                                <i class="fab fa-facebook-f text-sm"></i>
+                            </div>
+                            <span class="text-slate-200 group-hover:text-white">Facebook</span>
+                        </a>
+
+                        <a href="https://x.com" target="_blank" class="flex items-center gap-3 text-sm font-semibold hover:opacity-90 transition group">
+                            <div class="w-8 h-8 rounded-lg bg-black border border-slate-700 flex items-center justify-center text-white shadow">
+                                <i class="fab fa-x-twitter text-sm"></i>
+                            </div>
+                            <span class="text-slate-200 group-hover:text-white">X (Twitter)</span>
+                        </a>
+
+                        <a href="https://youtube.com" target="_blank" class="flex items-center gap-3 text-sm font-semibold hover:opacity-90 transition group">
+                            <div class="w-8 h-8 rounded-lg bg-[#FF0000] flex items-center justify-center text-white shadow">
+                                <i class="fab fa-youtube text-sm"></i>
+                            </div>
+                            <span class="text-slate-200 group-hover:text-white">YouTube</span>
+                        </a>
+
+                        <a href="https://instagram.com" target="_blank" class="flex items-center gap-3 text-sm font-semibold hover:opacity-90 transition group">
+                            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 flex items-center justify-center text-white shadow">
+                                <i class="fab fa-instagram text-sm"></i>
+                            </div>
+                            <span class="text-slate-200 group-hover:text-white">Instagram</span>
+                        </a>
+
+                        <a href="https://whatsapp.com" target="_blank" class="flex items-center gap-3 text-sm font-semibold hover:opacity-90 transition group">
+                            <div class="w-8 h-8 rounded-lg bg-[#25D366] flex items-center justify-center text-white shadow">
+                                <i class="fab fa-whatsapp text-base"></i>
+                            </div>
+                            <span class="text-slate-200 group-hover:text-white">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright Bar -->
+            <div class="pt-8 border-t border-slate-800/80 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p>&copy; 2026 Khan Tech & Review. All rights reserved.</p>
+                <p class="flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for Tech Enthusiasts
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ARTICLE VIEW MODAL -->
+    <div id="articleModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="bg-navy-900 border border-slate-700/80 w-full max-w-3xl rounded-2xl overflow-hidden shadow-2xl my-8 relative flex flex-col max-h-[90vh]">
+            <!-- Header Bar -->
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-navy-800">
+                <span id="modalCategory" class="text-xs font-bold text-accent-orange uppercase tracking-wider"></span>
+                <button onclick="closeModal('articleModal')" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-200 flex items-center justify-center transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- Article Scrollable Content -->
+            <div class="p-6 sm:p-8 overflow-y-auto space-y-6">
+                <h1 id="modalTitle" class="text-2xl sm:text-3xl font-extrabold text-white leading-tight"></h1>
+                <div class="flex items-center gap-4 text-xs text-slate-400 pb-2 border-b border-slate-800">
+                    <span id="modalDate"></span>
+                    <span>•</span>
+                    <span id="modalReadTime"></span>
+                    <span>•</span>
+                    <span>By <strong class="text-slate-200">Huzaima Khan</strong></span>
+                </div>
+                <img id="modalImage" src="" alt="Article image" class="w-full h-64 sm:h-80 object-cover rounded-xl shadow-lg">
+                <div id="modalBody" class="text-slate-300 text-sm sm:text-base leading-relaxed space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT US MODAL -->
+    <div id="contactModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-navy-900 border border-slate-700 w-full max-w-lg rounded-2xl p-6 sm:p-8 relative shadow-2xl">
+            <button onclick="closeModal('contactModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h2 class="text-2xl font-extrabold text-white mb-2">Get In Touch</h2>
+            <p class="text-xs text-slate-400 mb-6">Have questions or sponsorship inquiries? Drop us a message.</p>
+            <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Your Name</label>
+                    <input type="text" required class="w-full bg-navy-800 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-accent-orange">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Your Email</label>
+                    <input type="email" required class="w-full bg-navy-800 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-accent-orange">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Message</label>
+                    <textarea rows="4" required class="w-full bg-navy-800 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-accent-orange"></textarea>
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-accent-orange hover:bg-orange-600 text-white font-bold rounded-lg text-sm transition shadow-lg">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LEGAL MODALS CONTAINER (PRIVACY, TERMS, DISCLAIMER, ABOUT) -->
+    <div id="infoModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-navy-900 border border-slate-700 w-full max-w-2xl rounded-2xl p-6 sm:p-8 relative shadow-2xl max-h-[85vh] flex flex-col">
+            <button onclick="closeModal('infoModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h2 id="infoTitle" class="text-2xl font-extrabold text-white mb-4"></h2>
+            <div id="infoContent" class="overflow-y-auto text-sm text-slate-300 space-y-3 leading-relaxed pr-2"></div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Sample Blog Posts Data
+        const articles = [
+            {
+                id: 1,
+                title: "Samsung Galaxy S26 Ultra Full Review: The AI Camera Champion",
+                category: "Mobile Reviews",
+                date: "Oct 20, 2026",
+                readTime: "8 min read",
+                image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=800&q=80",
+                excerpt: "We spent two weeks testing the flagship Samsung Galaxy S26 Ultra. Here is our in-depth analysis on battery life, display quality, and camera performance.",
+                content: `
+                    <p class="text-base">The Samsung Galaxy S26 Ultra continues Samsung's dominance in premium Android smartphones. Packed with cutting-edge artificial intelligence photography tools and a sleek titanium build, it sets a high bar for 2026 flagship devices.</p>
+                    <h3 class="text-lg font-bold text-white mt-4">Key Specs & Display</h3>
+                    <p>Featuring a stunning 6.8-inch Dynamic AMOLED 2X panel with 3100 nits peak brightness, outdoor visibility is unmatched. The 120Hz refresh rate remains buttery smooth across all applications.</p>
+                    <h3 class="text-lg font-bold text-white mt-4">Camera Performance</h3>
+                    <p>The upgraded 200MP sensor combined with generative AI zoom processing allows crisp 10x optical-quality shots. Night portrait modes deliver deep tone separation with almost zero noise.</p>
+                    <h3 class="text-lg font-bold text-white mt-4">Verdict</h3>
+                    <p>If you want the most versatile Android smartphone with best-in-class display and long software support, the S26 Ultra is worth every penny.</p>
+                `
+            },
+            {
+                id: 2,
+                title: "Top 7 Battery Saving Hacks for Android Phones in 2026",
+                category: "Android Tips",
+                date: "Oct 18, 2026",
+                readTime: "5 min read",
+                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80",
+                excerpt: "Is your smartphone battery draining fast? Try these simple settings tweaks to extend your screen-on time by up to 30%.",
+                content: `
+                    <p>Battery degradation is a common frustration for smartphone power users. Fortunately, modern Android software gives us deeper control over background processes and power modes.</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Restrict Background Apps:</strong> Go to Settings > Battery > App Battery Usage and set hungry social apps to 'Restricted'.</li>
+                        <li><strong>Use Dark Mode:</strong> OLED displays turn off individual black pixels, saving up to 15% battery daily.</li>
+                        <li><strong>Turn off Wi-Fi & Bluetooth Scanning:</strong> Disable location accuracy tools that scan constantly in the background.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 3,
+                title: "How to Transfer Data from iPhone to Android Smoothly",
+                category: "How-To Guides",
+                date: "Oct 15, 2026",
+                readTime: "6 min read",
+                image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?auto=format&fit=crop&w=800&q=80",
+                excerpt: "Switching platforms doesn't mean losing your photos, contacts, or WhatsApp chats. Here is our step-by-step guide.",
+                content: `
+                    <p>Switching ecosystem from iOS to Android used to be stressful. Today, native tools make transferring WhatsApp backup, contacts, and photos effortless using direct cable transfer or cloud syncing.</p>
+                    <p class="mt-2">Follow our 4 simple steps to ensure all your media and messages copy over without missing a single file.</p>
+                `
+            },
+            {
+                id: 4,
+                title: "Google Pixel 10 Pro: Everything We Know So Far",
+                category: "Tech News",
+                date: "Oct 12, 2026",
+                readTime: "4 min read",
+                image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=80",
+                excerpt: "Leaked benchmarks reveal Google's next Tensor G5 chipset built on TSMC 3nm process with massive AI capabilities.",
+                content: `
+                    <p>Exciting news for Pixel fans! Google is transitioning away from Samsung Foundry to TSMC for its upcoming Tensor G5 chipset. Expect major efficiency gains, cooler temperatures, and zero throttling under gaming loads.</p>
+                `
+            },
+            {
+                id: 5,
+                title: "Best Budget Smartphones Under $300 (Fall 2026 Edition)",
+                category: "Mobile Reviews",
+                date: "Oct 10, 2026",
+                readTime: "7 min read",
+                image: "https://images.unsplash.com/photo-1546054454-aa26e2b734c7?auto=format&fit=crop&w=800&q=80",
+                excerpt: "You don't need $1,000 to get a great phone. Here are our top budget picks with high refresh displays and solid cameras.",
+                content: `
+                    <p>Mid-range and budget smartphones have gotten shockingly good. Devices like the POCO X series, Redmi Note, and Galaxy A-series now offer 120Hz AMOLED screens, 67W fast charging, and dependable dual-camera systems.</p>
+                `
+            },
+            {
+                id: 6,
+                title: "How to Speed Up Any Slow Android Device in 5 Minutes",
+                category: "Android Tips",
+                date: "Oct 05, 2026",
+                readTime: "4 min read",
+                image: "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&w=800&q=80",
+                excerpt: "Clear system cache, adjust animation speeds in Developer Options, and remove hidden bloatware effortlessly.",
+                content: `
+                    <p>Is your phone lagging when opening apps? Try setting Animation Scale to 0.5x in Developer Settings. This simple trick immediately makes UI transitions feel twice as fast on any smartphone!</p>
+                `
+            }
+        ];
+
+        let activeCategory = "All";
+
+        // Render Article Cards
+        function renderArticles(list) {
+            const container = document.getElementById("articlesGrid");
+            const noResults = document.getElementById("noResults");
+            container.innerHTML = "";
+
+            if (list.length === 0) {
+                noResults.classList.remove("hidden");
+                return;
+            } else {
+                noResults.classList.add("hidden");
+            }
+
+            list.forEach(article => {
+                const card = document.createElement("div");
+                card.className = "bg-navy-800 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition duration-300 flex flex-col group cursor-pointer shadow-md";
+                card.onclick = () => openArticleModal(article.id);
+
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${article.image}" alt="${article.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 left-3 bg-navy-900/90 text-accent-orange text-[10px] font-extrabold px-2.5 py-1 rounded-md border border-slate-700/60 uppercase tracking-wider">
+                            ${article.category}
+                        </span>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 text-xs text-slate-400 mb-2">
+                                <span><i class="far fa-calendar-alt mr-1"></i> ${article.date}</span>
+                                <span>•</span>
+                                <span><i class="far fa-clock mr-1"></i> ${article.readTime}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition leading-snug mb-2">
+                                ${article.title}
+                            </h3>
+                            <p class="text-slate-400 text-xs leading-relaxed line-clamp-2">
+                                ${article.excerpt}
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs font-semibold text-accent-orange">
+                            <span>Read Story</span>
+                            <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Category Filter Handler
+        function filterCategory(category) {
+            activeCategory = category;
+            const titleEl = document.getElementById("currentCategoryTitle");
+            const heroSec = document.getElementById("heroSection");
+
+            titleEl.textContent = category === "All" ? "Latest Articles" : category;
+
+            // Hide hero on subcategory filtering for cleaner view
+            if (category === "All") {
+                heroSec.style.display = "block";
+            } else {
+                heroSec.style.display = "none";
+            }
+
+            // Update Cat Pills Active state
+            document.querySelectorAll(".cat-pill").forEach(pill => {
+                if (pill.textContent.trim() === category) {
+                    pill.classList.remove("bg-navy-800", "text-slate-300");
+                    pill.classList.add("bg-accent-orange", "text-white");
+                } else {
+                    pill.classList.remove("bg-accent-orange", "text-white");
+                    pill.classList.add("bg-navy-800", "text-slate-300");
+                }
+            });
+
+            const filtered = category === "All" 
+                ? articles 
+                : articles.filter(a => a.category.toLowerCase() === category.toLowerCase());
+
+            renderArticles(filtered);
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        // Live Search Handling
+        function handleSearch() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            filterByQuery(query);
+        }
+
+        function handleMobileSearch() {
+            const query = document.getElementById("mobileSearchInput").value.toLowerCase();
+            filterByQuery(query);
+        }
+
+        function filterByQuery(query) {
+            const filtered = articles.filter(a => 
+                a.title.toLowerCase().includes(query) || 
+                a.excerpt.toLowerCase().includes(query) ||
+                a.category.toLowerCase().includes(query)
+            );
+            renderArticles(filtered);
+        }
+
+        // Open Article Modal
+        function openArticleModal(id) {
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+
+            document.getElementById("modalCategory").textContent = article.category;
+            document.getElementById("modalTitle").textContent = article.title;
+            document.getElementById("modalDate").textContent = article.date;
+            document.getElementById("modalReadTime").textContent = article.readTime;
+            document.getElementById("modalImage").src = article.image;
+            document.getElementById("modalBody").innerHTML = article.content;
+
+            document.getElementById("articleModal").classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+
+        // Legal & Static Modals Handler
+        function openModal(modalId) {
+            const modal = document.getElementById("infoModal");
+            const title = document.getElementById("infoTitle");
+            const content = document.getElementById("infoContent");
+
+            if (modalId === 'privacyModal') {
+                title.textContent = "Privacy Policy";
+                content.innerHTML = `
+                    <p>At Khan Tech & Review, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Khan Tech & Review and how we use it.</p>
+                    <h4 class="font-bold text-white mt-2">Log Files</h4>
+                    <p>Khan Tech & Review follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages.</p>
+                `;
+            } else if (modalId === 'termsModal') {
+                title.textContent = "Terms of Service";
+                content.innerHTML = `
+                    <p>Welcome to Khan Tech & Review! By accessing this website, we assume you accept these terms and conditions. Do not continue to use Khan Tech & Review if you do not agree to take all of the terms and conditions stated on this page.</p>
+                `;
+            } else if (modalId === 'disclaimerModal') {
+                title.textContent = "Disclaimer";
+                content.innerHTML = `
+                    <p>All the information on this website - Khan Tech & Review - is published in good faith and for general information purpose only. Khan Tech & Review does not make any warranties about the completeness, reliability and accuracy of this information.</p>
+                `;
+            } else if (modalId === 'aboutModal') {
+                title.textContent = "About Khan Tech & Review";
+                content.innerHTML = `
+                    <p>Khan Tech & Review is an independent tech blog delivering honest smartphone reviews, breaking tech news, and practical Android tips and how-to guides.</p>
+                    <p class="mt-2">Our mission is simple: help you buy smarter and get more out of the devices you already own.</p>
+                `;
+            } else if (modalId === 'contactModal') {
+                document.getElementById('contactModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+
+            modal.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add("hidden");
+            document.body.style.overflow = "auto";
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            alert("Thank you! Your message has been sent successfully. We will get back to you shortly.");
+            closeModal('contactModal');
+        }
+
+        // Mobile Nav Drawer Toggle
+        document.getElementById("mobileMenuBtn").addEventListener("click", () => {
+            const menu = document.getElementById("mobileMenu");
+            menu.classList.toggle("hidden");
+        });
+
+        // Initialize Page
+        window.onload = function() {
+            renderArticles(articles);
+        };
+    </script>
+</body>
+</html>
